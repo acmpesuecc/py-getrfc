@@ -126,14 +126,13 @@ if __name__ == '__main__':
     # setup ArgParse for ease of use
     parser = argparse.ArgumentParser(description='Get RFC data from command line ')
     parser.add_argument('rfc', type=int, metavar='RFCno', help='RFC Number that you want to get')
-    parser.add_argument('-all', type=bool, default=True, help='Specify whether you want the whole RFC or just the 1st page (default - true)')
-    parser.add_argument('-notall', type=bool, default=True, help='specify if you want only first page')
-    parser.add_argument('-tofile', type=bool, default=False,  help='Specify if you want to write to a file or just display in shell (default - false)')
+    parser.add_argument('-notall', action="store_true", help='specify if you want only first page')
+    parser.add_argument('-tofile', action="store_true", help='Specify if you want to write to a file or just display in shell (default - false)')
     parser.add_argument('-name', help='Name of a file you want to write to')
 
     args = parser.parse_args()
 
-    if args.all == True:
+    if args.notall == False: # if the user wants the entire RFC
 
         if args.tofile == False:
             getContentFromRFCNo(args.rfc, 'full', '', '')
@@ -141,7 +140,7 @@ if __name__ == '__main__':
         elif args.tofile == True:
             print("call function - all data to file")
 
-    elif args.notall == True:
+    elif args.notall == True: # if the user just wants the first page
 
         if args.tofile == False:
              print("call function - first page data to terminal")
