@@ -107,9 +107,9 @@ def getContentFromRFCNo(number, option, tofile, filename):
 
         # we have been asked to write the output data to the file
 
-        if filename == '':
-            filename = f'rfc{number}.txt'
-
+        if filename == '' or filename == None:
+            filename = input("Please enter the file name to store RFC at: ")
+            
         with open(filename, 'w+') as current_file:
             current_file.write(out)
 
@@ -132,25 +132,13 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.notall == False: # if the user wants the entire RFC
+    #simplifying the last part
+    if args.notall == False:
+        para = 'full'
+    else:
+        para = 'fpage'
 
-        if args.tofile == False:
-            getContentFromRFCNo(args.rfc, 'full', '', '')
-
-        elif args.tofile == True:
-            print("call function - all data to file")
-
-    elif args.notall == True: # if the user just wants the first page
-
-        if args.tofile == False:
-             print("call function - first page data to terminal")
-             getContentFromRFCNo(args.rfc, 'fpage', '', '')
-
-        elif args.tofile == True:
-             print("call function - first page data to file")
-
-
-
+    getContentFromRFCNo(args.rfc, para, args.tofile, args.name)
 
 
 
