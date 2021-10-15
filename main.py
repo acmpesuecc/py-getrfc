@@ -28,7 +28,7 @@ class ForbiddenError(Error):
 def getURL(rfc_no):
 
     # reuturn access URL for a specific RFC no
-    return 'https://www.ietf.org/rfc/rfc%s.txt'%(rfc_no)
+    return f'https://www.ietf.org/rfc/rfc{rfc_no}.txt'
 
 
 
@@ -108,12 +108,12 @@ def getContentFromRFCNo(number, option, tofile, filename):
         # we have been asked to write the output data to the file
 
         if filename == '':
-            filename = 'rfc%s.txt' % (number)
+            filename = f'rfc{number}.txt'
 
         with open(filename, 'w+') as current_file:
             current_file.write(out)
 
-        print("Successfully written to file %s !" % (filename))
+        print(f"Successfully written to file {filename} !")
 
     else:
 
