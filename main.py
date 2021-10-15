@@ -132,6 +132,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    #simplifying the last part
     if args.notall == False:
         para = 'full'
     else:
