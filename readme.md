@@ -37,7 +37,7 @@ python main.py [-h] [-notall] [-tofile] [-name NAME] RFCno
 | -name NAME | Name of a file you want to write to |
 | RFCno | RFC Number that you want to get |
 
-#Example
+# Example
 
 To get the first page of RFC No.15 the command is:
 ```python main.py -notall 15 ```
