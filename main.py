@@ -146,24 +146,24 @@ def getContentFromRFCNo(number, option, tofile, filename):
 
 
 getContentFromRFCNo(RFC, page,tofile, filename) 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    # setup ArgParse for ease of use
-    parser = argparse.ArgumentParser(description='Get RFC data from command line ')
-    parser.add_argument('rfc', type=int, metavar='RFCno', help='RFC Number that you want to get')
-    parser.add_argument('-notall', action="store_true", help='specify if you want only first page')
-    parser.add_argument('-tofile', action="store_true", help='Specify if you want to write to a file or just display in shell (default - false)')
-    parser.add_argument('-name', help='Name of a file you want to write to')
+#     # setup ArgParse for ease of use
+#     parser = argparse.ArgumentParser(description='Get RFC data from command line ')
+#     parser.add_argument('rfc', type=int, metavar='RFCno', help='RFC Number that you want to get')
+#     parser.add_argument('-notall', action="store_true", help='specify if you want only first page')
+#     parser.add_argument('-tofile', action="store_true", help='Specify if you want to write to a file or just display in shell (default - false)')
+#     parser.add_argument('-name', help='Name of a file you want to write to')
 
-    args = parser.parse_args()
+#     args = parser.parse_args()
 
-    #simplifying the last part
-    if args.notall == False:
-        para = 'full'
-    else:
-        para = 'fpage'
+#     #simplifying the last part
+#     if args.notall == False:
+#         para = 'full'
+#     else:
+#         para = 'fpage'
 
-    getContentFromRFCNo(args.rfc, para, args.tofile, args.name)
+#     getContentFromRFCNo(args.rfc, para, args.tofile, args.name)
 
 
 
