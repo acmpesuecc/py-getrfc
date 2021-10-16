@@ -1,6 +1,27 @@
 import argparse
 import requests
 from requests.exceptions import HTTPError
+from rich.console import Console
+from rich.prompt import Prompt
+console = Console()
+console.print("Hello, Welcome to GetRFC", style="green on black")
+RFC = Prompt.ask("Enter the RFC Number", default="15")
+console.log(RFC)
+page=Prompt.ask("Do you want just the first page?", default="Y")
+if page.lower() == 'y':
+    page='fpage'
+else:
+    page='full'
+tofile=Prompt.ask("Do you want to write the output to a file", default="Y")
+if tofile.lower() == 'y':
+    tofile=True
+else:
+    tofile=False
+if tofile:
+    filename = input("Please enter the file name to store RFC at: ")
+else:
+    filename = None
+
 
 '''
 Python script to fetch RFC data from IETF's website using the requests
@@ -10,6 +31,8 @@ library and perform one of two actions -
 
 Open to collaboration.
 '''
+
+
 
 class Error(Exception):
     ''' base class for all errors '''
@@ -45,6 +68,7 @@ def runRequest(url):
         return 0
 
     if response.status_code == 200:
+        print('200')
         return response
 
     elif response.status_code == 404:
@@ -54,6 +78,7 @@ def runRequest(url):
         raise ForbiddenError
 
 
+runRequest((getURL(RFC)))
 
 def getContentFromRFCNo(number, option, tofile, filename):
 
@@ -120,25 +145,25 @@ def getContentFromRFCNo(number, option, tofile, filename):
         print(out)
 
 
+getContentFromRFCNo(RFC, page,tofile, filename) 
+# if __name__ == '__main__':
 
-if __name__ == '__main__':
+#     # setup ArgParse for ease of use
+#     parser = argparse.ArgumentParser(description='Get RFC data from command line ')
+#     parser.add_argument('rfc', type=int, metavar='RFCno', help='RFC Number that you want to get')
+#     parser.add_argument('-notall', action="store_true", help='specify if you want only first page')
+#     parser.add_argument('-tofile', action="store_true", help='Specify if you want to write to a file or just display in shell (default - false)')
+#     parser.add_argument('-name', help='Name of a file you want to write to')
 
-    # setup ArgParse for ease of use
-    parser = argparse.ArgumentParser(description='Get RFC data from command line ')
-    parser.add_argument('rfc', type=int, metavar='RFCno', help='RFC Number that you want to get')
-    parser.add_argument('-notall', action="store_true", help='specify if you want only first page')
-    parser.add_argument('-tofile', action="store_true", help='Specify if you want to write to a file or just display in shell (default - false)')
-    parser.add_argument('-name', help='Name of a file you want to write to')
+#     args = parser.parse_args()
 
-    args = parser.parse_args()
+#     #simplifying the last part
+#     if args.notall == False:
+#         para = 'full'
+#     else:
+#         para = 'fpage'
 
-    #simplifying the last part
-    if args.notall == False:
-        para = 'full'
-    else:
-        para = 'fpage'
-
-    getContentFromRFCNo(args.rfc, para, args.tofile, args.name)
+#     getContentFromRFCNo(args.rfc, para, args.tofile, args.name)
 
 
 
