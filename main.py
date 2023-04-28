@@ -1,38 +1,45 @@
-import argparse
-import requests
-from requests.exceptions import HTTPError
-from rich.console import Console
-from rich.prompt import Prompt
-console = Console()
-console.print("Hello, Welcome to GetRFC", style="green on black")
-RFC = Prompt.ask("Enter the RFC Number", default="15")
-console.log(RFC)
-page=Prompt.ask("Do you want just the first page?", default="Y")
-if page.lower() == 'y':
-    page='fpage'
-else:
-    page='full'
-tofile=Prompt.ask("Do you want to write the output to a file", default="Y")
-if tofile.lower() == 'y':
-    tofile=True
-else:
-    tofile=False
-if tofile:
-    filename = input("Please enter the file name to store RFC at: ")
-else:
-    filename = None
-
-
 '''
 Python script to fetch RFC data from IETF's website using the requests
-library and perform one of two actions -
+library and perform one of two actions:
 1) Display it in stdout (terminal)
 2) Write it to a file specified by this user
 
 Open to collaboration.
 '''
 
+import argparse
+import requests
+from requests.exceptions import HTTPError
+from rich.console import Console
+from rich.prompt import Prompt
 
+# Creating a new console 
+console = Console()
+
+# Interacting with the user
+console.print("Hello, Welcome to GetRFC!", style="green on black")
+RFC = Prompt.ask("Enter the RFC Number: ", default="15")
+console.log(RFC)
+page=Prompt.ask("Do you want just the first page?", default="Y")
+
+if page.lower() == 'y':
+    page='fpage'
+else:
+    page='full'
+tofile=Prompt.ask("Do you want to write the output to a file?", default="Y")
+
+if tofile.lower() == 'y':
+    tofile=True
+else:
+    tofile=False
+
+if tofile:
+    filename = Prompt.ask("Please enter the file name to store RFC at: ")
+else:
+    filename = None
+
+
+# Checking for Errors
 
 class Error(Exception):
     ''' base class for all errors '''
@@ -47,18 +54,18 @@ class ForbiddenError(Error):
     pass
 
 
-
 def getURL(rfc_no):
 
     # reuturn access URL for a specific RFC no
     return f'https://www.ietf.org/rfc/rfc{rfc_no}.txt'
 
 
-
 def runRequest(url):
 
-    # function to run a request with the requests library
-    # and return data with the appropriate HTTP codes
+    '''
+    function to run a request with the requests library
+    and return data with the appropriate HTTP codes
+    '''
 
     try:
         response = requests.get(url)
@@ -77,7 +84,6 @@ def runRequest(url):
     elif response.status_code == 403:
         raise ForbiddenError
 
-
 runRequest((getURL(RFC)))
 
 def getContentFromRFCNo(number, option, tofile, filename):
@@ -94,11 +100,10 @@ def getContentFromRFCNo(number, option, tofile, filename):
             return 0
 
         except ForbiddenError:
-            print("Sorry! It appears that you do not have access to the above URL")
+            print("Sorry! It appears that you do not have access to the above URL.")
             return 0
 
         out = data.text
-
 
     elif option == 'fpage':
 
@@ -110,7 +115,7 @@ def getContentFromRFCNo(number, option, tofile, filename):
             return 0
 
         except ForbiddenError:
-            print("Sorry! It appears that you do not have access to the above URL")
+            print("Sorry! It appears that you do not have access to the above URL.")
             return 0
 
         iterable_content = data.iter_lines()
@@ -127,10 +132,8 @@ def getContentFromRFCNo(number, option, tofile, filename):
 
         out = buf
 
-
     if tofile:
-
-        # we have been asked to write the output data to the file
+        # To write the output data to a required file
 
         if filename == '' or filename == None:
             filename = input("Please enter the file name to store RFC at: ")
@@ -141,30 +144,7 @@ def getContentFromRFCNo(number, option, tofile, filename):
         print(f"Successfully written to file {filename} !")
 
     else:
-
         print(out)
 
 
 getContentFromRFCNo(RFC, page,tofile, filename) 
-# if __name__ == '__main__':
-
-#     # setup ArgParse for ease of use
-#     parser = argparse.ArgumentParser(description='Get RFC data from command line ')
-#     parser.add_argument('rfc', type=int, metavar='RFCno', help='RFC Number that you want to get')
-#     parser.add_argument('-notall', action="store_true", help='specify if you want only first page')
-#     parser.add_argument('-tofile', action="store_true", help='Specify if you want to write to a file or just display in shell (default - false)')
-#     parser.add_argument('-name', help='Name of a file you want to write to')
-
-#     args = parser.parse_args()
-
-#     #simplifying the last part
-#     if args.notall == False:
-#         para = 'full'
-#     else:
-#         para = 'fpage'
-
-#     getContentFromRFCNo(args.rfc, para, args.tofile, args.name)
-
-
-
-
