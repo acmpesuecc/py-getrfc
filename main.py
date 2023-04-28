@@ -152,8 +152,25 @@ def getContentFromRFCNo(number, option, tofile, filename):
 
         print(out)
 
+def titleConvertToRfcNum(accepted_string: str):
+    title = accepted_string
+    print("Select the title that matches your requirements and enter the RFC number associated with it.")
+    print("format:\n\t'RFC number' : 'Title'.")
+    for rfc_no in titles.keys():
+        if title in titles[rfc_no]:
+            print(f"{rfc_no} : {titles[rfc_no]}.\n")
+    final_RFC = input("Enter the RFC number suitable to you: ")
+    return final_RFC
 
-getContentFromRFCNo(RFC, page,tofile, filename) 
+try:
+    assert(int(RFC))
+    getContentFromRFCNo(RFC, page,tofile, filename)
+
+except :
+    RFC = titleConvertToRfcNum(RFC)
+    getContentFromRFCNo(RFC, page,tofile, filename)
+
+
 # if __name__ == '__main__':
 
 #     # setup ArgParse for ease of use
@@ -172,7 +189,3 @@ getContentFromRFCNo(RFC, page,tofile, filename)
 #         para = 'fpage'
 
 #     getContentFromRFCNo(args.rfc, para, args.tofile, args.name)
-
-
-
-
