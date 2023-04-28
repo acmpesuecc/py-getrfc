@@ -1,6 +1,4 @@
-import argparse
 import requests
-from requests.exceptions import HTTPError
 from rich.console import Console
 from rich.prompt import Prompt
 console = Console()
