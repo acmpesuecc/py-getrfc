@@ -1,0 +1,9 @@
+The `input` function is used inside the `if tofile` block to get the filename when `tofile` is true. 
+However, the `input` function is used without prompting the user to enter the filename, which could result in an error. 
+
+To fix this, I replaced the line:
+filename = input("Please enter the file name to store RFC at: ")
+with:
+filename = Prompt.ask("Please enter the file name to store RFC at: ")
+
+Also, I added some more comments and deleted unneccessary lines.
