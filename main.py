@@ -133,7 +133,7 @@ def getContentFromRFCNo(number, option, tofile, isgui, filename=''):
 def handler(RFC, pages, write_file):
     if write_file:
         filename = askstring("File name", "Enter name of file:")
-        getContentFromRFCNo(RFC, pages, False, True, filename)
+        getContentFromRFCNo(RFC, pages, True, True, filename)
     else:
         getContentFromRFCNo(RFC, pages, False, True)
 
