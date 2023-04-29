@@ -181,7 +181,5 @@ def loop():
     else:
         titleConvertToRfcNum(RFC)
         loop()
-    console.log(RFC)
-    runRequest((getURL(RFC)))
 
 loop()
