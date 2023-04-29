@@ -61,7 +61,7 @@ def runRequest(url):
 
 
 
-def getContentFromRFCNo(number, option, tofile, filename):
+def getContentFromRFCNo(number):
     page=Prompt.ask("Do you want just the first page?", default="Y")
     if page.lower() == 'y':
         page='fpage'
@@ -79,7 +79,7 @@ def getContentFromRFCNo(number, option, tofile, filename):
 
     out = ''
 
-    if option == 'full':
+    if page == 'full':
 
         try:
             data = runRequest(getURL(number))
@@ -95,7 +95,7 @@ def getContentFromRFCNo(number, option, tofile, filename):
         out = data.text
 
 
-    elif option == 'fpage':
+    elif page == 'fpage':
 
         try:
             data = runRequest(getURL(number))
@@ -142,9 +142,9 @@ def getContentFromRFCNo(number, option, tofile, filename):
 def titleConvertToRfcNum(accepted_string: str):
     title = accepted_string
     print("Select the title that matches your requirements and enter the RFC number associated with it.")
-    print("format:\n\t'RFC number' : 'Title'.")
+    print("format:\n'RFC number' : 'Title'.")
     for rfc_no in titles.keys():
-        if title in titles[rfc_no]:
+        if title.lower() in titles[rfc_no].lower():
             print(f"{rfc_no} : {titles[rfc_no]}.\n")
 
 
@@ -176,11 +176,10 @@ console.print("Hello, Welcome to GetRFC", style="green on black")
 
 def loop():
     RFC = Prompt.ask("Enter the RFC Number or Title", default="15")
-    try:
-        assert(int(RFC))
+    if(RFC.isnumeric()):
         getContentFromRFCNo(RFC)
-    except :
-        RFC = titleConvertToRfcNum(RFC)
+    else:
+        titleConvertToRfcNum(RFC)
         loop()
     console.log(RFC)
     runRequest((getURL(RFC)))
