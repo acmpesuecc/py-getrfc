@@ -3,10 +3,15 @@ import requests
 from requests.exceptions import HTTPError
 from rich.console import Console
 from rich.prompt import Prompt
+import urllib.request
+import re
+import keyboard
+import time
 console = Console()
 console.print("Hello, Welcome to GetRFC", style="green on black")
-RFC = Prompt.ask("Enter the RFC Number", default="15")
-console.log(RFC)
+
+title = Prompt.ask("Enter the RFC title")
+console.log(title)
 page=Prompt.ask("Do you want just the first page?", default="Y")
 if page.lower() == 'y':
     page='fpage'
@@ -53,6 +58,50 @@ def getURL(rfc_no):
     # reuturn access URL for a specific RFC no
     return f'https://www.ietf.org/rfc/rfc{rfc_no}.txt'
 
+def getURL_title(title):
+    webUrl=urllib.request.urlopen('https://www.ietf.org/rfc/rfc-index.txt')
+    # print("result:"+str(webUrl.getcode()))
+    data = webUrl.read().decode('utf-8')
+    matches = [i.start() for i in re.finditer(title, data)]
+    
+    if len(matches) == 0 : print("nothing")
+    
+    def get_RFC_id(match):
+        for i in range(match, 1, -1):
+            if data[i] == '\n' and data[i-1] == '\n':
+                return data[i+1:i+5]
+
+    ids = []
+    for match in matches:
+        ids.append(get_RFC_id(match))
+        # yield runRequest(getURL((get_RFC_id(match))))
+
+    def get_RFC_title(match):
+        for i in range(match, 1, -1):
+            if data[i] == '\n' and data[i-1] == '\n':
+                for j in range(i+1, len(data)):
+                    if data[j:j+8] == '(Format:':
+                        return data[i+1:j].strip()
+
+    title = []
+    for match in matches:
+        title.append(get_RFC_title(match))
+    i = 0
+    while True:
+        if not title:
+            break
+        keyboard.wait('enter')
+        for j in range(i, i + 5):
+            if j < len(title):
+                print(title[j])
+        i += 5
+
+    for i, id in enumerate(ids):
+        print(f"{i+1}. {id}")
+
+    choice = Prompt.ask("Enter your choice", default="1")
+    return getURL(ids[int(choice)-1])
+    # return f'https://www.ietf.org/rfc/rfc{ids[int(choice)-1]}.txt'
 
 
 def runRequest(url):
@@ -77,17 +126,15 @@ def runRequest(url):
     elif response.status_code == 403:
         raise ForbiddenError
 
-
-runRequest((getURL(RFC)))
-
-def getContentFromRFCNo(number, option, tofile, filename):
-
+runRequest(getURL_title(title))
+#Title
+def getContentFromRFCTitle(title, option, tofile, filename):
     out = ''
 
     if option == 'full':
 
         try:
-            data = runRequest(getURL(number))
+            data = runRequest(getURL_title(title))
 
         except Error404:
             print("Sorry! The resource you are looking for does not exist!")
@@ -103,7 +150,7 @@ def getContentFromRFCNo(number, option, tofile, filename):
     elif option == 'fpage':
 
         try:
-            data = runRequest(getURL(number))
+            data = runRequest(getURL_title(title))
 
         except Error404:
             print("Sorry! The resource you are looking for does not exist!")
@@ -145,7 +192,7 @@ def getContentFromRFCNo(number, option, tofile, filename):
         print(out)
 
 
-getContentFromRFCNo(RFC, page,tofile, filename) 
+getContentFromRFCTitle(title,page,tofile,filename) 
 # if __name__ == '__main__':
 
 #     # setup ArgParse for ease of use
