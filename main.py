@@ -144,7 +144,7 @@ def titleConvertToRfcNum(accepted_string: str):
     print("Select the title that matches your requirements and enter the RFC number associated with it.")
     print("format:\n'RFC number' : 'Title'.")
     for rfc_no in titles.keys():
-        if title.lower() in titles[rfc_no].lower():
+        if set(title.lower().split()).issubset(titles[rfc_no].lower().split()):
             print(f"{rfc_no} : {titles[rfc_no]}.\n")
 
 
