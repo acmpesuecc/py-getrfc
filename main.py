@@ -175,6 +175,9 @@ console = Console()
 console.print("Hello, Welcome to GetRFC", style="green on black")
 
 def loop():
+    url = "https://www.ietf.org/rfc/rfc-index.txt"
+    r = requests.get(url, allow_redirects=True)
+    open('assets/rfc-index.txt','wb').write(r.content)
     RFC = Prompt.ask("Enter the RFC Number or Title", default="15")
     if(RFC.isnumeric()):
         getContentFromRFCNo(RFC)
