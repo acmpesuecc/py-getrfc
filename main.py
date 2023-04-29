@@ -1,6 +1,14 @@
 import argparse
 import requests
 from requests.exceptions import HTTPError
+import os
+
+contents = open(os.path.join('assets', 'rfc-index.txt')).read().split('\n\n')
+contents = contents[22:]
+titles = {}
+for elem in contents:
+    titles[int(elem[0:4])] = elem[5:].split('.')[0]
+
 from rich.console import Console
 from rich.prompt import Prompt
 console = Console()
