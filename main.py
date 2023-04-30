@@ -1,27 +1,9 @@
 import argparse
-import requests
-from requests.exceptions import HTTPError
 from rich.console import Console
 from rich.prompt import Prompt
-console = Console()
-console.print("Hello, Welcome to GetRFC", style="green on black")
-RFC = Prompt.ask("Enter the RFC Number", default="15")
-console.log(RFC)
-page=Prompt.ask("Do you want just the first page?", default="Y")
-if page.lower() == 'y':
-    page='fpage'
-else:
-    page='full'
-tofile=Prompt.ask("Do you want to write the output to a file", default="Y")
-if tofile.lower() == 'y':
-    tofile=True
-else:
-    tofile=False
-if tofile:
-    filename = input("Please enter the file name to store RFC at: ")
-else:
-    filename = None
-
+import requests
+from requests.exceptions import HTTPError
+import os
 
 '''
 Python script to fetch RFC data from IETF's website using the requests
@@ -78,13 +60,26 @@ def runRequest(url):
         raise ForbiddenError
 
 
-runRequest((getURL(RFC)))
 
-def getContentFromRFCNo(number, option, tofile, filename):
+def getContentFromRFCNo(number):
+    page=Prompt.ask("Do you want just the first page?", default="Y")
+    if page.lower() == 'y':
+        page='fpage'
+    else:
+        page='full'
+    tofile=Prompt.ask("Do you want to write the output to a file", default="Y")
+    if tofile.lower() == 'y':
+        tofile=True
+    else:
+        tofile=False
+    if tofile:
+        filename = input("Please enter the file name to store RFC at: ")
+    else:
+        filename = None
 
     out = ''
 
-    if option == 'full':
+    if page == 'full':
 
         try:
             data = runRequest(getURL(number))
@@ -100,7 +95,7 @@ def getContentFromRFCNo(number, option, tofile, filename):
         out = data.text
 
 
-    elif option == 'fpage':
+    elif page == 'fpage':
 
         try:
             data = runRequest(getURL(number))
@@ -144,8 +139,15 @@ def getContentFromRFCNo(number, option, tofile, filename):
 
         print(out)
 
+def titleConvertToRfcNum(accepted_string: str):
+    title = accepted_string
+    print("Select the title that matches your requirements and enter the RFC number associated with it.")
+    print("format:\n'RFC number' : 'Title'.")
+    for rfc_no in titles.keys():
+        if all(elem in titles[rfc_no].lower() for elem in title.lower().split()):
+            print(f"{rfc_no} : {titles[rfc_no]}.\n")
 
-getContentFromRFCNo(RFC, page,tofile, filename) 
+
 # if __name__ == '__main__':
 
 #     # setup ArgParse for ease of use
@@ -164,7 +166,23 @@ getContentFromRFCNo(RFC, page,tofile, filename)
 #         para = 'fpage'
 
 #     getContentFromRFCNo(args.rfc, para, args.tofile, args.name)
+contents = open(os.path.join('assets', 'rfc-index.txt')).read().split('\n\n')
+contents = contents[22:]
+titles = {}
+for elem in contents:
+    titles[int(elem[0:4])] = elem[5:].split('.')[0]
+console = Console()
+console.print("Hello, Welcome to GetRFC", style="green on black")
 
+def loop():
+    url = "https://www.ietf.org/rfc/rfc-index.txt"
+    r = requests.get(url, allow_redirects=True)
+    open('assets/rfc-index.txt','wb').write(r.content)
+    RFC = Prompt.ask("Enter the RFC Number or Title", default="15")
+    if(RFC.isnumeric()):
+        getContentFromRFCNo(RFC)
+    else:
+        titleConvertToRfcNum(RFC)
+        loop()
 
-
-
+loop()
